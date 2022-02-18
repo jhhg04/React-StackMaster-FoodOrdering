@@ -1,20 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPizzas } from '../actions/pizzaActions';
 import Pizza from '../components/Pizza';
-import pizzas from '../pizzasData';
 
 export default function HomeScreen() {
+  const dispatch = useDispatch();
+  const pizzastate = useSelector((state) => state.getAllPizzasReducer);
+  const { pizzas, error, loading } = pizzastate;
+
+  useEffect(() => {
+    dispatch(getAllPizzas());
+  }, []);
+
   return (
     <div>
-      <div className='row'>
-        {pizzas.map((pizza) => {
-          return (
-            <div className='col-md-4 '>
-              <div>
-                <Pizza pizza={pizza} />
+      <div className='row justify-content-center'>
+        {loading ? (
+          <h1>Loading...</h1>
+        ) : error ? (
+          <h1>Something went wrong!</h1>
+        ) : (
+          pizzas.map((pizza) => {
+            return (
+              <div key={pizza._id} className='col-md-3 m-3'>
+                <div>
+                  <Pizza pizza={pizza} />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );
