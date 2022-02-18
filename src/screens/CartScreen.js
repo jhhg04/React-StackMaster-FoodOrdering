@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { getAllPizzas } from '../actions/pizzaActions';
-// import Pizza from '../components/Pizza';
+import { addToCart, deleteFromCart } from '../actions/cartActions';
 
 export default function CartScreen() {
   const cartstate = useSelector((state) => state.cartReducer);
   const cartItems = cartstate.cartItems;
-  // const dispatch = useDispatch();
-  // const { pizzas, error, loading } = pizzastate;
-
-  // useEffect(() => {
-  //   dispatch(getAllPizzas());
-  // }, []);
+  var subtotal = cartItems.reduce((x, item) => x + item.price, 0);
+  const dispatch = useDispatch();
 
   return (
     <div>
@@ -30,9 +25,25 @@ export default function CartScreen() {
                     {item.price}
                   </h1>
                   <h1 style={{ display: 'inline' }}>Quantiy :</h1>
-                  <i className='fa fa-plus' aria-hidden='true'></i>
+                  <i
+                    className='fa fa-plus'
+                    aria-hidden='true'
+                    onClick={() => {
+                      dispatch(
+                        addToCart(item, item.quantity + 1, item.varient)
+                      );
+                    }}
+                  ></i>
                   <b>{item.quantity}</b>
-                  <i className='fa fa-minus' aria-hidden='true'></i>
+                  <i
+                    className='fa fa-minus'
+                    aria-hidden='true'
+                    onClick={() => {
+                      dispatch(
+                        addToCart(item, item.quantity - 1, item.varient)
+                      );
+                    }}
+                  ></i>
                   <hr />
                 </div>
                 <div className='m-1 w-100'>
@@ -42,13 +53,22 @@ export default function CartScreen() {
                   />
                 </div>
                 <div className='m-1 w-100'>
-                  <i className='fa fa-trash mt-4' aria-hidden='true'></i>
+                  <i
+                    className='fa fa-trash mt-4'
+                    aria-hidden='true'
+                    onClick={() => {
+                      dispatch(deleteFromCart(item));
+                    }}
+                  ></i>
                 </div>
               </div>
             );
           })}
         </div>
-        <div className='col-md-4'></div>
+        <div className='col-md-4 text-end'>
+          <h2 style={{ fontSize: '40px' }}>Subtotal: {subtotal}$</h2>
+          <button className='btn'>CHECK OUT</button>
+        </div>
       </div>
     </div>
   );
